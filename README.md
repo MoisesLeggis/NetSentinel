@@ -48,3 +48,18 @@ El agente procesa cada evento de red a través de un pipeline jerárquico diseñ
                                                                                      [ LOG: ALERTA FORENSE ]          [ ESCUDO DE RESILIENCIA ]
                                                                                                │                               │
                                                                                      [ Añadir a Caché RAM ]           [ Asumir Limpia + Guardar ]
+
+
+📦 Requisitos e Instalación1. Clonar el RepositorioBashgit clone [https://github.com/TU_USUARIO/NetSentinel.git](https://github.com/TU_USUARIO/NetSentinel.git)
+cd NetSentinel
+2. Configurar el Entorno VirtualBashpython3 -m venv .venv
+source .venv/bin/activate  # En Linux/macOS
+# .venv\Scripts\activate   # En Windows
+3. Instalar DependenciasBashpip install -r requirements.txt
+4. Variables de Entorno (Credenciales)Crea un archivo llamado .env en la raíz del directorio del proyecto e introduce tu llave secreta de AbuseIPDB:Fragmento de códigoKEY=tu_api_key_secreta_aqui
+🕹️ Modo de Uso y PruebasDebido a que la captura pasiva (sniffing) interactúa con las interfaces de red del sistema operativo a bajo nivel, el script requiere permisos de superusuario (Administrador) para su ejecución:Bashsudo python analizar_ips.py
+Monitoreo Activo en Terminal (Modo Debug):PlaintextAnalizando IP: 8.8.8.8 - Puntaje: 0
+Analizando IP: 185.220.101.5 - Puntaje: 100
+Error conectando con la API o límite alcanzado (Escudo de resiliencia activado)
+Telemetría de Alertas en alerta_seguridad.log:Plaintext2026-05-27 10:15:32 - WARNING - Tráfico malicioso detectado destino: [185.220.101.5] puerto destino: < 443 > origen: [192.168.100.15] puerto origen: < 53210 >
+🛡️ Buenas Prácticas de Ingeniería ImplementadasEste proyecto no es un script de automatización aislado; fue diseñado aplicando conceptos clave de arquitectura de software para ciberseguridad:Deduplicación en memoria RAM vs Listas: El uso de set() garantiza búsquedas con una complejidad temporal de $O(1)$, evitando la degradación del rendimiento del script conforme se descubren nuevas IPs.Defensa contra caídas del API (Fail-Safe): En lugar de permitir un colapso del socket (KeyError), el software atrapa el error, notifica al administrador y mantiene la monitorización activa.Principio de Menor Privilegio para Datos: El archivo .env está estrictamente registrado en el .gitignore para asegurar el cumplimiento de normativas de desarrollo seguro (OWASP / GitLeaks prevention).📄 LicenciaEste proyecto está bajo la Licencia MIT. Consulta el archivo para más detalles.👨‍💻 AutorDesarrollado como un proyecto de auditoría de seguridad de redes e inteligencia de amenazas en tiempo real.
